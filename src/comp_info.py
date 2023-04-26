@@ -1,6 +1,7 @@
 import requests
 import competitor
 
+
 def get_wcif(competition: str, event: str, event_type: str):
     url = "https://www.worldcubeassociation.org/api/v0/competitions/"\
           + competition + "/wcif/public"
@@ -11,7 +12,9 @@ def get_wcif(competition: str, event: str, event_type: str):
                 and event in person['registration']['eventIds']:
             rank = get_pb_rank(person, event, event_type)
             if rank is not None:
-                comp = competitor.Competitor(person['name'],
+                comp = competitor.Competitor(person['name'].encode('ascii',
+                                                                   'replace')
+                                             .decode(),
                                              person['wcaId'],
                                              rank)
                 competitors_in_event.append(comp)
@@ -25,8 +28,14 @@ def get_pb_rank(person, event, event_type):
             return result['worldRanking']
 
 
+def get_psych(comp: str, event: str, type: str, top_num: int):
+    persons = get_wcif(comp, event, type)
+    persons.sort(key=lambda x: x.rank);
+    return persons[:top_num]
+
+
 if __name__ == "__main__":
-    comps = get_wcif("PleaseBeSolvedPickering2023", "333bf", "average")
+    comps = get_wcif("CanadianChampionship2023", "333", "average")
     comps.sort(key=lambda x: x.rank)
     for comp in comps:
         print(comp)
