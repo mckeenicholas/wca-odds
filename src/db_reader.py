@@ -2,7 +2,7 @@ import csv
 import competitor
 
 
-def read_db(persons: dict, event: str, year_cutoff=2021):
+def read_db(persons: dict, event: str, year_cutoff=2022):
     with open("../WCA_export_Results.tsv", newline='', encoding='utf8') \
             as results_db:
         reader = csv.reader(results_db, delimiter='\t')
