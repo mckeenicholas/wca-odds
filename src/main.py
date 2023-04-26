@@ -8,8 +8,7 @@ def calculate_odds(comp: str, event: str, results_type: str, round_type: str, nu
     return_list = comp_info.get_psych(comp, event, results_type, num_consider)
     competitors_dict = {}
     for competitor in return_list:
-        if competitor.num_results != 0:
-            competitors_dict[competitor.wca_id] = competitor
+        competitors_dict[competitor.wca_id] = competitor
     db.read_db(competitors_dict, event)
     for competitor in competitors_dict.values():
         print(competitor.global_average())
