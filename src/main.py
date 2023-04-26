@@ -10,19 +10,20 @@ def calculate_odds(comp: str, event: str, results_type: str, round_type: str, nu
     for competitor in return_list:
         competitors_dict[competitor.wca_id] = competitor
     db.read_db(competitors_dict, event)
-    for competitor in competitors_dict.values():
-        print(competitor.global_average())
     print("Results Fetched, Simulating Competitions")
     for i in range(num_simulations):
         results = []
         for competitor in competitors_dict.values():
-            results.append((competitor, get_average(competitor.simulate_times(
-                num_attempts[round_type]), round_type)))
+            if competitor.num_results > 0:
+                results.append((competitor, get_average(competitor.simulate_times(
+                    num_attempts[round_type]), round_type)))
         results.sort(key=lambda x: x[1])
         results[0][0].num_wins += 1
         results[0][0].num_podium += 1
-        results[1][0].num_podium += 1
-        results[2][0].num_podium += 1
+        if len(results) > 1:
+            results[1][0].num_podium += 1
+            if len(results) > 2:
+                results[2][0].num_podium += 1
     for i, competitor in enumerate(results):
         print(f"{i + 1}. {competitor[0].name.ljust(30)} "
               f"win% {(competitor[0].num_wins / num_simulations) * 100:6.2f} "
@@ -52,4 +53,4 @@ def get_average(results: list, round_type: str):
 
 
 if __name__ == "__main__":
-    calculate_odds("HalifaxFavourites2023", "333", "average", "average", 16, 10000)
+    calculate_odds("CubingUSANationals2023", "333", "average", "average", 16, 10000)
