@@ -1,5 +1,5 @@
-import random
 import numpy as np
+from numpy import random
 
 
 class Competitor:
@@ -10,6 +10,7 @@ class Competitor:
     num_dnf: int
     num_wins: int
     num_podium: int
+    dnf_average_chance: int
 
     def __init__(self, name: str, wca_id: str, rank: int):
         self.name = name
@@ -18,6 +19,7 @@ class Competitor:
         self.num_results, self.num_dnf = 0, 0
         self.num_wins, self.num_podium = 0, 0
         self.results = []
+        self.dnf_average_chance = 0
 
     def add_result(self, results: list):
         self.num_results += len(results)
@@ -33,16 +35,21 @@ class Competitor:
     def simulate_times(self, num: int):
         mu = np.mean(self.results)
         sigma = np.std(self.results, ddof=1)
-        times = np.random.normal(mu, sigma, num)
-        for i in range(num):
-            if random.random() < self.dnf_rate():
-                times[i] = -1
-        return times.tolist()
+        return np.random.normal(mu, sigma, num)
 
     def dnf_rate(self):
         if self.num_results == 0:
             return 1
         return self.num_dnf / self.num_results
+
+    def generate_stats(self, event_type: str):
+        good_average = 1 - self.dnf_rate()
+        if event_type == "average":
+            self.dnf_average_chance = 1 - ((good_average ** 5) + (5 * (good_average ** 4) * (1 - good_average)))
+        elif event_type == "mean":
+            self.dnf_average_chance = 1 - (good_average ** 3)
+        elif event_type == "best":
+            self.dnf_average_chance = (1 - good_average) ** 3
 
     def global_average(self):
         return np.mean(self.results)
