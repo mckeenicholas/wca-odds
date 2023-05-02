@@ -5,7 +5,6 @@ import db_reader as db
 
 num_attempts = {"average": 5, "mean": 3, "best": 3}
 
-
 def calculate_odds(comp: str, event: str, results_type: str, round_type: str, num_consider=16, num_simulations=1000):
     return_list = comp_info.get_psych(comp, event, results_type, num_consider)
     competitors_dict = {}
@@ -58,4 +57,4 @@ def get_comp_with_results(competitors_dict: dict, event_type):
 
 
 if __name__ == "__main__":
-    calculate_odds("CubingUSANationals2023", "333", "average", "average", 16, 10000)
+    calculate_odds("WC2023", "333", "average", "average", 16, 10000)
