@@ -43,13 +43,16 @@ class Competitor:
         return self.num_dnf / self.num_results
 
     def generate_stats(self, event_type: str):
-        good_average = 1 - self.dnf_rate()
+        non_dnf_average = 1 - self.dnf_rate()
         if event_type == "average":
-            self.dnf_average_chance = 1 - ((good_average ** 5) + (5 * (good_average ** 4) * (1 - good_average)))
+            self.dnf_average_chance = 1\
+                                      - ((non_dnf_average ** 5)
+                                         + (5 * (non_dnf_average ** 4)
+                                            * (1 - non_dnf_average)))
         elif event_type == "mean":
-            self.dnf_average_chance = 1 - (good_average ** 3)
+            self.dnf_average_chance = 1 - (non_dnf_average ** 3)
         elif event_type == "best":
-            self.dnf_average_chance = (1 - good_average) ** 3
+            self.dnf_average_chance = (1 - non_dnf_average) ** 3
 
     def global_average(self):
         return np.mean(self.results)

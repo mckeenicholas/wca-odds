@@ -5,7 +5,9 @@ import db_reader as db
 
 num_attempts = {"average": 5, "mean": 3, "best": 3}
 
-def calculate_odds(comp: str, event: str, results_type: str, round_type: str, num_consider=16, num_simulations=1000):
+
+def calculate_odds(comp: str, event: str, results_type: str, round_type: str,
+                   num_consider=16, num_simulations=1000):
     return_list = comp_info.get_psych(comp, event, results_type, num_consider)
     competitors_dict = {}
     for competitor in return_list:
@@ -19,7 +21,9 @@ def calculate_odds(comp: str, event: str, results_type: str, round_type: str, nu
         for competitor in valid_competitors:
             if np.random.rand() < competitor.dnf_average_chance:
                 continue
-            results.append((competitor, get_average(competitor.simulate_times(num_attempts[round_type]), round_type)))
+            results.append((competitor, get_average(
+                competitor.simulate_times(num_attempts[round_type]),
+                round_type)))
         results.sort(key=lambda x: x[1])
         if len(results) > 0:
             results[0][0].num_wins += 1
@@ -29,7 +33,8 @@ def calculate_odds(comp: str, event: str, results_type: str, round_type: str, nu
                 if len(results) > 2:
                     results[2][0].num_podium += 1
     valid_competitors.sort(key=lambda x: x.num_wins, reverse=True)
-    print(f"Finished {num_simulations} simulations in {time.time() - start_time:3.2} seconds")
+    print(
+        f"Finished {num_simulations} simulations in {time.time() - start_time:3.2} seconds")
     print(f"Predictions for {comp}:")
     for i, competitor in enumerate(valid_competitors):
         print(f"{str(i + 1).ljust(2)} {competitor.name.ljust(30)} "
